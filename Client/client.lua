@@ -2,33 +2,30 @@ local QBCore = exports['qb-core']:GetCoreObject()
 local SmallBins = Config.SmallBinProps
 local BigBins = Config.BigBinProps
 local canSearch = true
-local alreadysearched = 92
+local alreadySearched = {192192192192}
 
 RegisterNetEvent('tr-dumpsterdive:SearchSmallTrash', function()
     if canSearch then
         local ped = GetPlayerPed(-1)
         local pos = GetEntityCoords(ped)
         local smallTrashFound = false
-
         for i = 1, #SmallBins do
             local SmallTrash = GetClosestObjectOfType(pos.x, pos.y, pos.z, 1.0, SmallBins[i], false, false, false)
             local dumpPos = GetEntityCoords(SmallTrash)
             local dist = GetDistanceBetweenCoords(pos.x, pos.y, pos.z, dumpPos.x, dumpPos.y, dumpPos.z, true)
-
             if dist < 1.5 then
-
-                for i = 1, #alreadysearched do
-                    if alreadysearched[i] == SmallTrash then
+                for i = 1, #alreadySearched do
+                    if alreadySearched[i] == SmallTrash then
                         smallTrashFound = true
                     end
-                    if i == #alreadysearched and smallTrashFound then
+                    if i == #alreadySearched and smallTrashFound then
                         QBCore.Functions.Notify(Config.Text["SmallTrashAlreadySearched"], 'error')
-                    elseif i == #alreadysearched and not smallTrashFound then
+                    elseif i == #alreadySearched and not smallTrashFound then
 
                     local itemType = math.random(#Config.BinRewards)
                     TriggerEvent('tr-dumpsterdive:SmallTrashBar',itemType)
-                    TriggerServerEvent('tr-dumpsterdive:SmallDumpsterTime', SmallTrash)
-                    table.insert(alreadysearched, SmallTrash)
+                    TriggerServerEvent('tr-dumpsterdive:SmallDumpsterTimer', SmallTrash)
+                    table.insert(alreadySearched, SmallTrash)
                     end
                 end
             end
@@ -36,10 +33,10 @@ RegisterNetEvent('tr-dumpsterdive:SearchSmallTrash', function()
     end
 end)
 
-RegisterNetEvent('tr-dumpsterdive:SmallDumpsterTime', function(object)
-    for i = 1, #alreadysearched do
-        if alreadysearched[i] == object then
-            table.remove(alreadysearched, i)
+RegisterNetEvent('tr-dumpsterdive:SmallBinRemove', function(object)
+    for i = 1, #alreadySearched do
+        if alreadySearched[i] == object then
+            table.remove(alreadySearched, i)
         end
     end
 end)
@@ -56,14 +53,6 @@ exports['qb-target']:AddTargetModel(SmallBins, {
   },
   distance = Config.Distance,
 })
-
-RegisterNetEvent('tr-dumpsterdive:removeSmallTrash', function(object)
-    for i = 1, #alreadysearched do
-        if alreadysearched[i] == object then
-            table.remove(alreadysearched, i)
-        end
-    end
-end)
 
 RegisterNetEvent('tr-dumpsterdive:SmallTrashBar', function(itemType)
     QBCore.Functions.Progressbar("trash_find", Config.Text["SearchingTrash"], Config.SmallBinTimer * 1000, false, true, {
@@ -100,43 +89,31 @@ end)
 
 
 -- Big Trash Bins aka Dumpster Stuff
-
 RegisterNetEvent('tr-dumpsterdive:SearchBigTrash', function()
     if canSearch then
         local ped = GetPlayerPed(-1)
         local pos = GetEntityCoords(ped)
         local BigTrashFound = false
-
         for i = 1, #BigBins do
             local BigTrash = GetClosestObjectOfType(pos.x, pos.y, pos.z, 1.0, BigBins[i], false, false, false)
             local dumpPos = GetEntityCoords(BigTrash)
             local dist = GetDistanceBetweenCoords(pos.x, pos.y, pos.z, dumpPos.x, dumpPos.y, dumpPos.z, true)
-
             if dist < 1.5 then
-
-                for i = 1, #alreadysearched do
-                    if alreadysearched[i] == BigTrash then
+                for i = 1, #alreadySearched do
+                    if alreadySearched[i] == BigTrash then
                         BigTrashFound = true
                     end
-                    if i == #alreadysearched and BigTrashFound then
+                    if i == #alreadySearched and BigTrashFound then
                         QBCore.Functions.Notify(Config.Text["BigDumsterAlreadySerached"], 'error')
-                    elseif i == #alreadysearched and not BigTrashFound then
+                    elseif i == #alreadySearched and not BigTrashFound then
 
                     local itemType = math.random(#Config.BinRewards)
                     TriggerEvent('tr-dumpsterdive:BigDumpster',itemType)
-                    TriggerServerEvent('tr-dumpsterdive:SmallDumpsterTime', BigTrash)
-                    table.insert(alreadysearched, BigTrash)
+                    TriggerServerEvent('tr-dumpsterdive:RemoveDumpster', BigTrash)
+                    table.insert(alreadySearched, BigTrash)
                     end
                 end
             end
-        end
-    end
-end)
-
-RegisterNetEvent('tr-dumpsterdive:SmallDumpsterTime', function(object)
-    for i = 1, #alreadysearched do
-        if alreadysearched[i] == object then
-            table.remove(alreadysearched, i)
         end
     end
 end)
@@ -154,10 +131,10 @@ exports['qb-target']:AddTargetModel(BigBins, {
   distance = Config.Distance,
 })
 
-RegisterNetEvent('tr-dumpsterdive:BigBinRemoveh', function(object)
-    for i = 1, #alreadysearched do
-        if alreadysearched[i] == object then
-            table.remove(alreadysearched, i)
+RegisterNetEvent('tr-dumpsterdive:BigBinRemove', function(object)
+    for i = 1, #alreadySearched do
+        if alreadySearched[i] == object then
+            table.remove(alreadySearched, i)
         end
     end
 end)
