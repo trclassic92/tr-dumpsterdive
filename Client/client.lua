@@ -6,7 +6,7 @@ local alreadySearched = {192192192192}
 
 RegisterNetEvent('tr-dumpsterdive:SearchSmallTrash', function()
     if canSearch then
-        local ped = GetPlayerPed(-1)
+        local ped = PlayerPedId()
         local pos = GetEntityCoords(ped)
         local smallTrashFound = false
         for i = 1, #SmallBins do
@@ -91,7 +91,7 @@ end)
 -- Big Trash Bins aka Dumpster Stuff
 RegisterNetEvent('tr-dumpsterdive:SearchBigTrash', function()
     if canSearch then
-        local ped = GetPlayerPed(-1)
+        local ped = PlayerPedId()
         local pos = GetEntityCoords(ped)
         local BigTrashFound = false
         for i = 1, #BigBins do
