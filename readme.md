@@ -34,7 +34,7 @@ Dumpster Diving script / resource for QBCore Servers
 5. Once you have finished all that then you will be able to ensure the resource in your server.cfg (Unless you added the resource to a folder that is already ensured like [standalone] then you won't have to do anything else.
 
 ## Discord
-- [Join Discord](https://discord.gg/zRCdhENsHG)
+- [Join Discord](https://discord.gg/vTCUWCnQSD)
 
 ## Support
 - [Ko-fi Link](https://ko-fi.com/trclassic)
