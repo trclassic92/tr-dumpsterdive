@@ -20,14 +20,14 @@ Dumpster Diving script / resource for QBCore Servers
 ## Dependencies
 - [qb-core](https://github.com/qbcore-framework/qb-core)
 - [qb-target](https://github.com/BerkieBb/qb-target)
-- [qb-lock](https://github.com/Nathan-FiveM/qb-lock)
+- [ps-ui]([https://github.com/Nathan-FiveM/qb-lock](https://github.com/Project-Sloth/ps-ui))
 
 ## How to install?
 1. Once you have downloaded the resource from github move the folder to your server resource directory
 
 2. Remove -Main from the name of the folder
 
-3. If you don't have "qb-lock" already installed on your server then you will need to install that from this github URL -[qb-lock](https://github.com/Nathan-FiveM/qb-lock)
+3. If you don't have "ps-ui" already installed on your server then you will need to install that from this github URL -[ps-ui]([https://github.com/Nathan-FiveM/qb-lock](https://github.com/Project-Sloth/ps-ui))
 
 4. Next you can edit the config to your liking.
 
