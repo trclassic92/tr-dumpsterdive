@@ -22,10 +22,10 @@ RegisterNetEvent('tr-dumpsterdive:SearchSmallTrash', function()
                         QBCore.Functions.Notify(Config.Text["SmallTrashAlreadySearched"], 'error')
                     elseif i == #alreadySearched and not smallTrashFound then
 
-                    local itemType = math.random(#Config.BinRewards)
-                    TriggerEvent('tr-dumpsterdive:SmallTrashBar',itemType)
-                    TriggerServerEvent('tr-dumpsterdive:SmallDumpsterTimer', SmallTrash)
-                    table.insert(alreadySearched, SmallTrash)
+                        local itemType = math.random(#Config.BinRewards)
+                        TriggerEvent('tr-dumpsterdive:SmallTrashBar',itemType)
+                        TriggerServerEvent('tr-dumpsterdive:SmallDumpsterTimer', SmallTrash)
+                        table.insert(alreadySearched, SmallTrash)
                     end
                 end
             end
@@ -41,18 +41,6 @@ RegisterNetEvent('tr-dumpsterdive:SmallBinRemove', function(object)
     end
 end)
 
-exports['qb-target']:AddTargetModel(SmallBins, {
-    options = {
-    {
-      type = "client",
-      event = "tr-dumpsterdive:SearchSmallTrash",
-      icon = Target.IconsHighLight["smallBins"],
-      label = Target.Label["smallBins"],
-      targeticon = Target.Icon["smallBins"],
-    }
-  },
-  distance = Config.Distance,
-})
 
 RegisterNetEvent('tr-dumpsterdive:SmallTrashBar', function(itemType)
     QBCore.Functions.Progressbar("trash_find", Config.Text["SearchingTrash"], Config.SmallBinTimer * 1000, false, true, {
@@ -68,20 +56,21 @@ RegisterNetEvent('tr-dumpsterdive:SmallTrashBar', function(itemType)
         StopAnimTask(PlayerPedId(), "amb@prop_human_bum_bin@idle_b", "idle_d", 1.0)
         local seconds = math.random(Config.MiniGame.SmallbinTimer.Min, Config.MiniGame.SmallbinTimer.Max)
         local circles = math.random(Config.MiniGame.SmallBinCircles.Min, Config.MiniGame.SmallBinCircles.Max)
-        local success = exports["qb-lock"]:StartLockPickCircle(circles, seconds)
-        if success then
-            if Config.BinRewards[itemType].type == "item" then
-                QBCore.Functions.Notify(Config.Text["FoundSomething"], "success")
-                TriggerServerEvent('tr-dumpsterdive:smallBins')
-            elseif Config.BinRewards[itemType].type == "cash" then
-                QBCore.Functions.Notify(Config.Text["FoundCash"], "success")
-                TriggerServerEvent('tr-dumpsterdive:smallBinsMoney')
-            elseif Config.BinRewards[itemType].type == "nothing" then
+        exports['ps-ui']:Circle(function(success)
+            if success then
+                if Config.BinRewards[itemType].type == "item" then
+                    QBCore.Functions.Notify(Config.Text["FoundSomething"], "success")
+                    TriggerServerEvent('tr-dumpsterdive:smallBins')
+                elseif Config.BinRewards[itemType].type == "cash" then
+                    QBCore.Functions.Notify(Config.Text["FoundCash"], "success")
+                    TriggerServerEvent('tr-dumpsterdive:smallBinsMoney')
+                elseif Config.BinRewards[itemType].type == "nothing" then
+                    QBCore.Functions.Notify(Config.Text["FoundNothing"], "error")
+                end
+            else
                 QBCore.Functions.Notify(Config.Text["FoundNothing"], "error")
             end
-        else
-            QBCore.Functions.Notify(Config.Text["FoundNothing"], "error")
-        end
+        end, circles, seconds)
     end, function()
         StopAnimTask(PlayerPedId(), "amb@prop_human_bum_bin@idle_b", "idle_d", 1.0)
     end)
@@ -107,29 +96,16 @@ RegisterNetEvent('tr-dumpsterdive:SearchBigTrash', function()
                         QBCore.Functions.Notify(Config.Text["BigDumsterAlreadySerached"], 'error')
                     elseif i == #alreadySearched and not BigTrashFound then
 
-                    local itemType = math.random(#Config.BinRewards)
-                    TriggerEvent('tr-dumpsterdive:BigDumpster',itemType)
-                    TriggerServerEvent('tr-dumpsterdive:RemoveDumpster', BigTrash)
-                    table.insert(alreadySearched, BigTrash)
+                        local itemType = math.random(#Config.BinRewards)
+                        TriggerEvent('tr-dumpsterdive:BigDumpster',itemType)
+                        TriggerServerEvent('tr-dumpsterdive:RemoveDumpster', BigTrash)
+                        table.insert(alreadySearched, BigTrash)
                     end
                 end
             end
         end
     end
 end)
-
-exports['qb-target']:AddTargetModel(BigBins, {
-    options = {
-    {
-      type = "client",
-      event = "tr-dumpsterdive:SearchBigTrash",
-      icon = Target.IconsHighLight["bigBins"],
-      label = Target.Label["bigBins"],
-      targeticon = Target.Icon["bigBins"],
-    }
-  },
-  distance = Config.Distance,
-})
 
 RegisterNetEvent('tr-dumpsterdive:BigBinRemove', function(object)
     for i = 1, #alreadySearched do
@@ -153,25 +129,63 @@ RegisterNetEvent('tr-dumpsterdive:BigDumpster', function(itemType)
         StopAnimTask(PlayerPedId(), "amb@prop_human_bum_bin@idle_b", "idle_d", 1.0)
         local seconds = math.random(Config.MiniGame.BigBinTimer.Min, Config.MiniGame.BigBinTimer.Max)
         local circles = math.random(Config.MiniGame.BigBinCircles.Min, Config.MiniGame.BigBinCircles.Max)
-        local success = exports["qb-lock"]:StartLockPickCircle(circles, seconds)
-        if success then
-            if Config.BinRewards[itemType].type == "item" then
-                QBCore.Functions.Notify(Config.Text["FoundSomething"], "success")
+        exports['ps-ui']:Circle(function(success)
+            if success then
+                if Config.BinRewards[itemType].type == "item" then
+                    QBCore.Functions.Notify(Config.Text["FoundSomething"], "success")
                     TriggerServerEvent('tr-dumpsterdive:Bigbins')
-            elseif Config.BinRewards[itemType].type == "cash" then
-                QBCore.Functions.Notify(Config.Text["FoundCash"], "success")
-                if success then
-                    TriggerServerEvent('tr-dumpsterdive:BigbinsMoney')
-                else
+                elseif Config.BinRewards[itemType].type == "cash" then
+                    QBCore.Functions.Notify(Config.Text["FoundCash"], "success")
+                    if success then
+                        TriggerServerEvent('tr-dumpsterdive:BigbinsMoney')
+                    else
+                        QBCore.Functions.Notify(Config.Text["FoundNothing"], "error")
+                    end
+                elseif Config.BinRewards[itemType].type == "nothing" then
                     QBCore.Functions.Notify(Config.Text["FoundNothing"], "error")
                 end
-            elseif Config.BinRewards[itemType].type == "nothing" then
+            else
                 QBCore.Functions.Notify(Config.Text["FoundNothing"], "error")
             end
-        else
-            QBCore.Functions.Notify(Config.Text["FoundNothing"], "error")
-        end
+        end, circles, seconds)
+
     end, function()
         StopAnimTask(PlayerPedId(), "amb@prop_human_bum_bin@idle_b", "idle_d", 1.0)
     end)
 end)
+
+-- Target Handling
+
+
+CreateThread(function()
+    while true do
+        exports['qb-target']:AddTargetModel(Config.SmallBinProps, {
+            options = {
+                {
+                    type = "client",
+                    event = "tr-dumpsterdive:SearchSmallTrash",
+                    icon = Target.IconsHighLight["smallBins"],
+                    label = Target.Label["smallBins"],
+                    targeticon = Target.Icon["smallBins"],
+                }
+            },
+            distance = Config.Distance,
+        })
+
+        exports['qb-target']:AddTargetModel(Config.BigBinProps, {
+            options = {
+                {
+                    type = "client",
+                    event = "tr-dumpsterdive:SearchBigTrash",
+                    icon = Target.IconsHighLight["bigBins"],
+                    label = Target.Label["bigBins"],
+                    targeticon = Target.Icon["bigBins"],
+                }
+            },
+            distance = Config.Distance,
+        })
+
+        Wait(1)
+    end
+end)
+
